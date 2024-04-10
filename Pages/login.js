@@ -25,7 +25,7 @@ const Login = ({ navigation }) => {
 
       // Navegar para a página inicial após a "tarefa assíncrona" ser concluída
       navigation.navigate('Home');
-    }, 10000); // Ajuste este valor para controlar a duração da tela de carregamento
+    }, 3000); // Ajuste este valor para controlar a duração da tela de carregamento
   };
 
   if (isLoading) {

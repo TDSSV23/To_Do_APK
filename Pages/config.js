@@ -23,6 +23,9 @@ export default function Header() {
         <TouchableOpacity onPress={() => BackHandler.exitApp()}>
           <Text style={[styles.texto, {color: configTextColor}]}>Fechar App</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Login', 'deslogar')}>
+          <Text style={[styles.texto, {color: configTextColor}]}>Logout</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={[styles.texto, {color: configTextColor}]}>Voltar</Text>
         </TouchableOpacity>

@@ -6,9 +6,11 @@ const LoadingScreen = () => {
   return (
     <View style={styles.container}>
       <LottieView 
-        source={require('../assets/anima.json')}
+        source={require('../assets/Animation.json')}
         autoPlay
         loop
+        style={{width: '100%',
+          height: '100%'}}
       />
     </View>
   );
@@ -19,8 +21,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 50,
-    height: 50
+    width: '100%',
+    height: '100%'
   },
 });
 
