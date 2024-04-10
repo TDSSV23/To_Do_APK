@@ -6,7 +6,7 @@ import Home from './Pages/home.js'; // Importe suas telas
 import Config from './Pages/config.js'; // Importe suas telas
 // import Msg from './Components/PushNotification.js'; // Importe suas telas
 import Login from './Pages/login.js'
-import Loading from './Components/Loading.js'
+import Ac from './Components/acelerometro.js'
 
 
 export default function App() {
@@ -17,8 +17,8 @@ export default function App() {
     <ThemeProvider>
       <NavigationContainer >
         <Stack.Navigator  screenOptions={{ headerShown: false }}>
-          {/* <Stack.Screen name="Load" component={Loading} /> */}
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Ac" component={Ac} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Configurações" component={Config} />
         </Stack.Navigator>

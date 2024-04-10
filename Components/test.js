@@ -36,13 +36,8 @@ const Login = ({ navigation }) => {
   const handleBiometricLogin = async () => {
     if (isBiometricsSupported) {
       const result = await LocalAuthentication.authenticateAsync();
-
       if (result.success) {
-        setIsLoading(true);
-        setTimeout(() => {
-          setIsLoading(false);
-          navigation.navigate('Home');
-        }, 5000);
+        navigation.navigate('Home');
       } else {
         alert('Falha na autenticação.');
       }
