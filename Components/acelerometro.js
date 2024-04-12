@@ -17,7 +17,7 @@ export default function GyroscopeComponent() {
     this._subscription = Gyroscope.addListener(gyroscopeData => {
       setDataGyroscopio(gyroscopeData);
       console.log('Gyroscope data:', gyroscopeData); // Log gyroscope data
-      if (Math.abs(gyroscopeData.x) > 1 || Math.abs(gyroscopeData.y) > 1 || Math.abs(gyroscopeData.z) > 1) {
+      if (Math.abs(gyroscopeData.x) > 5 || Math.abs(gyroscopeData.y) > 5 || Math.abs(gyroscopeData.z) > 5) {
         console.log('Opening URL...'); // Log before opening URL
         Linking.openURL('https://joaomanfre.github.io/teste/')
           .then(() => console.log('URL opened')) // Log on success

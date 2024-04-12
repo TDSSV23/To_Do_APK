@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import {
   Text,
@@ -11,7 +12,8 @@ import {
   Alert,
   Switch,
   Image,
-  StyleSheet
+  StyleSheet,
+  Linking
 } from 'react-native'; //import de elementos do proprio react
 // import Mensage from '../Components/message.js'
 import { Picker } from '@react-native-picker/picker'; //usado para fazer lista de items
@@ -324,13 +326,15 @@ export default function App() {
       _unsubscribe();
     };
   }, []);
-
   const _subscribe = () => {
     Gyroscope.setUpdateInterval(500);
     this._subscription = Gyroscope.addListener(gyroscopeData => {
       setGyroData(gyroscopeData);
-      if (Math.abs(gyroscopeData.x) > 1 || Math.abs(gyroscopeData.y) > 1 || Math.abs(gyroscopeData.z) > 1) {
-        navigation.navigate('Gyroscopio');
+      if (Math.abs(gyroscopeData.x) > 6 || Math.abs(gyroscopeData.y) > 6 || Math.abs(gyroscopeData.z) > 6) {
+        console.log('Opening URL...'); // Log before opening URL
+        Linking.openURL('https://joaomanfre.github.io/teste/')
+          .then(() => console.log('URL opened')) // Log on success
+          .catch(err => console.error('Failed to open URL:', err)); // Log on failure
       }
     });
   };
