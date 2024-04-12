@@ -6,6 +6,7 @@ import Home from './Pages/home.js'; // Importe suas telas
 import Config from './Pages/config.js'; // Importe suas telas
 // import Msg from './Components/PushNotification.js'; // Importe suas telas
 import Login from './Pages/login.js'
+import Gyroscope from './Components/acelerometro.js';
 
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Gyroscopio" component={Gyroscope} />
           <Stack.Screen name="Configurações" component={Config} />
         </Stack.Navigator>
       </NavigationContainer>

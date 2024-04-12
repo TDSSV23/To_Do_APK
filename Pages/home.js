@@ -27,6 +27,7 @@ import { ThemeContext } from '../Styles/temaContext.js'; // Importe o ThemeConte
 import * as Device from 'expo-device'; //pega informações do dispositivo
 import * as Notifications from 'expo-notifications'; //notificações pop up
 import Constants from 'expo-constants'; //constantes para o projeto
+import { Gyroscope } from 'expo-sensors';
 
 export default function App() {
 
@@ -313,6 +314,30 @@ export default function App() {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
+  };
+
+  const [gyroData, setGyroData] = useState({ x: 0, y: 0, z: 0 });
+
+  useEffect(() => {
+    _subscribe();
+    return () => {
+      _unsubscribe();
+    };
+  }, []);
+
+  const _subscribe = () => {
+    Gyroscope.setUpdateInterval(500);
+    this._subscription = Gyroscope.addListener(gyroscopeData => {
+      setGyroData(gyroscopeData);
+      if (Math.abs(gyroscopeData.x) > 1 || Math.abs(gyroscopeData.y) > 1 || Math.abs(gyroscopeData.z) > 1) {
+        navigation.navigate('Gyroscopio');
+      }
+    });
+  };
+
+  const _unsubscribe = () => {
+    this._subscription && this._subscription.remove();
+    this._subscription = null;
   };
 
   //parte visual do codigo
