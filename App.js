@@ -9,6 +9,7 @@ import Login from './Pages/login.js'
 
 
 
+
 export default function App() {
   // const { theme, toggleTheme } = useContext(ThemeContext);
   const Stack = createStackNavigator();
@@ -18,7 +19,7 @@ export default function App() {
       <NavigationContainer >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Home" component={Home} />     
           <Stack.Screen name="Configurações" component={Config} />
         </Stack.Navigator>
       </NavigationContainer>

@@ -20,17 +20,31 @@ const Login = ({ navigation }) => {
   }, []);
 
   const handleLogin = async () => {
-    if (!username || !password) {
+
+    if ((!username || !password) ) {
       alert('Todos os campos devem ser preenchidos!');
       return;
     }
 
-    setIsLoading(true);
+    // Armazenar os dados em uma constante fixa (como solicitado)
+    const fixedUserData = {
+      username: 'Admin',
+      password: '2304'
+    };
 
-    setTimeout(() => {
-      setIsLoading(false);
-      navigation.navigate('Home');
-    }, 10000);
+    // Verificar se os dados fornecidos correspondem aos dados fixos
+    if (username === fixedUserData.username && password === fixedUserData.password) {
+      // Navegar para a página principal (ou qualquer outra página após o login)
+
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        navigation.navigate('Home');
+      }, 10000);
+    } else {
+      alert('Credenciais inválidas. Tente novamente.');
+    }
+
   };
 
   const handleBiometricLogin = async () => {
