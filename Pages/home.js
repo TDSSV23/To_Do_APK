@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import {
   Text,
@@ -14,26 +13,26 @@ import {
   Image,
   StyleSheet,
   Linking
-} from 'react-native'; //import de elementos do proprio react
-// import Mensage from '../Components/message.js'
-import { Picker } from '@react-native-picker/picker'; //usado para fazer lista de items
-import DateTimePicker from '@react-native-community/datetimepicker'; //seletor de data
-import stylesY from '../Styles/estilos.js'; //estilos da pagina
-import { Entypo } from '@expo/vector-icons'; //pacote de icones
-import { useNavigation } from "@react-navigation/native"; //navegacao entre paginas
-import { getLatitude } from '../Components/mapa.js'; // latitude do dispositivo
-import MapView, { Marker } from 'react-native-maps'; // marcador do mapa
-import * as Location from 'expo-location'; // pacote para a localização
-import * as ImagePicker from 'expo-image-picker'; //seletor de imagem
-import { ThemeContext } from '../Styles/temaContext.js'; // Importe o ThemeContext
-import * as Device from 'expo-device'; //pega informações do dispositivo
-import * as Notifications from 'expo-notifications'; //notificações pop up
-import Constants from 'expo-constants'; //constantes para o projeto
-import { Gyroscope } from 'expo-sensors';
+} from 'react-native'; // Importando componentes do React Native
+import { Picker } from '@react-native-picker/picker'; // Componente para criar uma lista de itens selecionáveis
+import DateTimePicker from '@react-native-community/datetimepicker'; // Componente para selecionar data e hora
+import stylesY from '../Styles/estilos.js'; // Importando estilos personalizados
+import { Entypo } from '@expo/vector-icons'; // Pacote de ícones
+import { useNavigation } from "@react-navigation/native"; // Hook para navegação entre telas
+import { getLatitude } from '../Components/mapa.js'; // Função para obter a latitude do dispositivo
+import MapView, { Marker } from 'react-native-maps'; // Componentes para exibir mapas e marcadores no mapa
+import * as Location from 'expo-location'; // Pacote para acessar a localização do dispositivo
+import * as ImagePicker from 'expo-image-picker'; // Componente para selecionar imagens da biblioteca do dispositivo
+import { ThemeContext } from '../Styles/temaContext.js'; // Importando o contexto do tema
+import * as Device from 'expo-device'; // Pacote para obter informações sobre o dispositivo
+import * as Notifications from 'expo-notifications'; // Pacote para enviar notificações push
+import Constants from 'expo-constants'; // Constantes para o projeto
+import { Gyroscope } from 'expo-sensors'; // Sensor de giroscópio
+import { scheduleNotificationAsync } from 'expo-notifications';
 
 export default function App() {
 
-  //mensagem codigo da propria documentação
+  // Configuração do manipulador de notificações
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -42,16 +41,14 @@ export default function App() {
     }),
   });
 
-
-  // Can use this function below or use Expo's Push Notification Tool from: https://expo.dev/notifications
-  // aqui são definidas as informações do pop up
+  // Função para enviar uma notificação push
   async function sendPushNotification(expoPushToken) {
     const message = {
       to: expoPushToken,
       sound: 'default',
       title: taskTitle,
       body: taskCategory,
-      data: { someData: 'tarefa criada com sucesso'},
+      data: { someData: 'tarefa criada com sucesso' },
     };
 
     await fetch('https://exp.host/--/api/v2/push/send', {
@@ -65,6 +62,7 @@ export default function App() {
     });
   }
 
+  // Função para registrar o dispositivo para notificações push
   async function registerForPushNotificationsAsync() {
     let token;
 
@@ -122,32 +120,33 @@ export default function App() {
   }, []);
 
 
-  //constantes do projeto
+  // Constantes do projeto
   const { theme, toggleTheme, configTextColor } = useContext(ThemeContext); // Acesse o tema atual
-  const navigation = useNavigation(); //navegação
+  const navigation = useNavigation(); // Navegação
   const styles = stylesY(theme);
 
-  const [location, setLocation] = useState(null); //armazena a localização
-  const [markerLocation, setMarkerLocation] = useState(null); //armazena o marcador
-  const [latitude, setLatitude] = useState(null); //armazena o latitude
-  const [longitude, setLongitude] = useState(null);//armazena o longitude
+  const [location, setLocation] = useState(null); // Armazena a localização
+  const [markerLocation, setMarkerLocation] = useState(null); // Armazena o marcador
+  const [latitude, setLatitude] = useState(null); // Armazena a latitude
+  const [longitude, setLongitude] = useState(null); // Armazena a longitude
 
-  const [tasks, setTasks] = useState([]); //armazena as tarefas
-  const [selectedTasks, setSelectedTasks] = useState([]); //armazena quais tarefas selecionadas
-  const [taskTitle, setTaskTitle] = useState(''); //armazena o titulo das tarefas
-  const [taskDate, setTaskDate] = useState(new Date()); //armazena a data das tarefas
-  const [taskTime, setTaskTime] = useState(new Date()); //armazena a hora das tarefas
-  const [taskLocation, setTaskLocation] = useState(''); //armazena a localização das tarefas
-  const [taskCategory, setTaskCategory] = useState(''); //armazena a categoria
-  const [modalVisible, setModalVisible] = useState(false); //modal visivel ou não
-  const [openModalImg, setopenModalImg] = useState(false); //modal 2
+  const [tasks, setTasks] = useState([]); // Armazena as tarefas
+  const [selectedTasks, setSelectedTasks] = useState([]); // Armazena quais tarefas estão selecionadas
+  const [taskTitle, setTaskTitle] = useState(''); // Armazena o título das tarefas
+  const [taskDate, setTaskDate] = useState(new Date());
+  const [taskTime, setTaskTime] = useState(new Date()); // Armazena a hora das tarefas
+
+  const [taskLocation, setTaskLocation] = useState(''); // Armazena a localização das tarefas
+  const [taskCategory, setTaskCategory] = useState(''); // Armazena a categoria
+  const [modalVisible, setModalVisible] = useState(false); // Controla a visibilidade do modal
+  const [openModalImg, setopenModalImg] = useState(false); // Controla a visibilidade do segundo modal
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [filter, setFilter] = useState('Pendentes'); // Alterado de 'Todos' para 'Pendentes'
   const [image, setImage] = useState(null);
 
-  //cores das categorias que existem
+  // Cores das categorias que existem
   const categoryColors = {
     'Atribuído a Mim': '#40f3ff',
     'Meu Dia': '#f8fa7a',
@@ -158,12 +157,31 @@ export default function App() {
     'Concluído': '#ccc'
   };
 
-  const handleAddTask = () => {
+
+  const handleAddTask = async () => {
     if (taskTitle.trim() === '') {
       return;
     }
 
-    //abaixo é setado a tarefa com os devidos dados
+    // Verifica se a data e hora da tarefa estão no futuro
+    const taskDateTime = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate(), taskTime.getHours(), taskTime.getMinutes());
+    const now = new Date();
+    if (taskDateTime > now) {
+      // Calcula a diferença de tempo entre o momento atual e a data e hora da tarefa
+      const timeDifference = taskDateTime.getTime() - now.getTime();
+
+      // Agenda a notificação para a data e hora da tarefa
+      await scheduleNotificationAsync({
+        content: {
+          title: taskTitle,
+          body: taskCategory,
+          data: { someData: 'tarefa criada com sucesso' },
+        },
+        trigger: { seconds: timeDifference / 1000 } // Converte a diferença de tempo para segundos
+      });
+    }
+
+    // Abaixo é setado a tarefa com os devidos dados
     const newTask = {
       id: Date.now(),
       title: taskTitle,
@@ -194,6 +212,7 @@ export default function App() {
     setImage(null);
   };
 
+
   const handleSelectTask = (id) => {
     if (selectedTasks.includes(id)) {
       setSelectedTasks(selectedTasks.filter((taskId) => taskId !== id));
@@ -212,6 +231,7 @@ export default function App() {
     setIsEditing(true);
     setModalVisible(true);
     setImage(task.image);
+
   };
 
   const handleDeleteTasks = () => {
@@ -219,18 +239,22 @@ export default function App() {
     setSelectedTasks([]);
   };
 
-    const onChangeDate = (event, selectedDate) => {
-      const currentDate = selectedDate || taskDate;
-      setDatePickerVisible(Platform.OS === 'ios');
-      setTaskDate(currentDate);
-    };
+  const onChangeDate = (event, selectedDate) => {
+    const currentDate = selectedDate || taskDate;
+    setDatePickerVisible(Platform.OS === 'ios');
+    setTaskDate(currentDate);
+    console.log(selectedDate)
+  };
 
-    const onChangeTime = (event, selectedTime) => {
-      const currentTime = selectedTime || taskTime;
-      setTimePickerVisible(Platform.OS === 'ios');
-      setTaskTime(currentTime);
-    };
-  //filtro das categorias
+
+  const onChangeTime = (event, selectedTime) => {
+    const currentTime = selectedTime || taskTime;
+    setTimePickerVisible(Platform.OS === 'ios');
+    setTaskTime(currentTime);
+
+  };
+
+  // Filtro das categorias
   const handleFilter = (category) => {
     setFilter(category);
   };
@@ -326,6 +350,8 @@ export default function App() {
       _unsubscribe();
     };
   }, []);
+
+
   const _subscribe = () => {
     Gyroscope.setUpdateInterval(500);
     this._subscription = Gyroscope.addListener(gyroscopeData => {
@@ -427,7 +453,7 @@ export default function App() {
           style={styles.deleteButton}
           onPress={handleDeleteTasks}
         >
-          <Text style={[styles.deleteButtonText, { color: configTextColor}]}>Deletar selecionados</Text>
+          <Text style={[styles.deleteButtonText, { color: configTextColor }]}>Deletar selecionados</Text>
         </TouchableOpacity>
       )}
       {/* modal de criação da tarefa */}
@@ -465,16 +491,19 @@ export default function App() {
           {datePickerVisible && (
             <DateTimePicker
               testID="datePicker"
-              value={taskDate}
               mode={'date'}
+              value={date}
               is24Hour={true}
               display="default"
               onChange={onChangeDate}
+              minimumDate={new Date()}
+              maximumDate={new Date(2100, 0, 1)}
             />
           )}
           <TouchableOpacity onPress={() => setTimePickerVisible(true)}>
             <Text style={styles.input}>{taskTime.toLocaleTimeString()}</Text>
           </TouchableOpacity>
+
           {timePickerVisible && (
             <DateTimePicker
               testID="timePicker"
@@ -485,6 +514,8 @@ export default function App() {
               onChange={onChangeTime}
             />
           )}
+
+
           <View>
 
             <Text style={styles.input}>Selecione a localização:</Text>
@@ -526,7 +557,6 @@ export default function App() {
               title={isEditing ? 'Salvar' : 'Adicionar'}
               onPress={async () => {
                 handleAddTask();
-                await sendPushNotification(expoPushToken);
               }}
             />
             <Button title="Cancelar" onPress={() => {
