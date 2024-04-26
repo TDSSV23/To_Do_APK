@@ -492,7 +492,7 @@ export default function App() {
             <DateTimePicker
               testID="datePicker"
               mode={'date'}
-              value={date}
+              value={taskDate}
               is24Hour={true}
               display="default"
               onChange={onChangeDate}
