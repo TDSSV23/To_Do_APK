@@ -18,12 +18,20 @@ export default function App() {
     <ThemeProvider>
       <NavigationContainer >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="audio" component={Audio} />
-          <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Configurações" component={Config} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
   );
 }
+
+
+{/* <Button
+              title={isEditing ? 'Salvar' : 'Adicionar'}
+              onPress={async () => {
+                handleAddTask();
+              }}
+            /> */}

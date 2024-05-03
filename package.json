@@ -16,7 +16,7 @@
     "@react-native-community/datetimepicker": "7.6.1",
     "@react-native-community/geolocation": "^3.2.0",
     "@react-native-community/slider": "^4.5.2",
-    "@react-native-picker/picker": "2.6.1",
+    "@react-native-picker/picker": "^2.6.1",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native-stack": "^6.9.22",
     "@react-navigation/stack": "^6.3.25",
@@ -24,6 +24,7 @@
     "dotenv": "^16.4.5",
     "eas-cli": "^7.6.2",
     "expo": "~50.0.17",
+    "expo-av": "~13.10.6",
     "expo-constants": "~15.4.6",
     "expo-device": "~5.9.4",
     "expo-image-picker": "^14.7.1",
@@ -48,8 +49,7 @@
     "react-native-maps-directions": "^1.9.0",
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.6.4",
-    "react-navigation": "^5.0.0",
-    "expo-av": "~13.10.6"
+    "react-navigation": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

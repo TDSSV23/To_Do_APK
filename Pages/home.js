@@ -11,28 +11,29 @@ import {
   Alert,
   Switch,
   Image,
-  StyleSheet,
-  Linking
-} from 'react-native'; // Importando componentes do React Native
-import { Picker } from '@react-native-picker/picker'; // Componente para criar uma lista de itens selecionáveis
-import DateTimePicker from '@react-native-community/datetimepicker'; // Componente para selecionar data e hora
-import stylesY from '../Styles/estilos.js'; // Importando estilos personalizados
-import { Entypo } from '@expo/vector-icons'; // Pacote de ícones
-import { useNavigation } from "@react-navigation/native"; // Hook para navegação entre telas
-import { getLatitude } from '../Components/mapa.js'; // Função para obter a latitude do dispositivo
-import MapView, { Marker } from 'react-native-maps'; // Componentes para exibir mapas e marcadores no mapa
-import * as Location from 'expo-location'; // Pacote para acessar a localização do dispositivo
-import * as ImagePicker from 'expo-image-picker'; // Componente para selecionar imagens da biblioteca do dispositivo
-import { ThemeContext } from '../Styles/temaContext.js'; // Importando o contexto do tema
-import * as Device from 'expo-device'; // Pacote para obter informações sobre o dispositivo
-import * as Notifications from 'expo-notifications'; // Pacote para enviar notificações push
-import Constants from 'expo-constants'; // Constantes para o projeto
-import { Gyroscope } from 'expo-sensors'; // Sensor de giroscópio
+  StyleSheet
+} from 'react-native'; //import de elementos do proprio react
+// import Mensage from '../Components/message.js'
+import { Picker } from '@react-native-picker/picker'; //usado para fazer lista de items
+import DateTimePicker from '@react-native-community/datetimepicker'; //seletor de data
+import stylesY from '../Styles/estilos.js'; //estilos da pagina
+import { Entypo } from '@expo/vector-icons'; //pacote de icones
+import { useNavigation } from "@react-navigation/native"; //navegacao entre paginas
+import { getLatitude } from '../Components/mapa.js'; // latitude do dispositivo
+import MapView, { Marker } from 'react-native-maps'; // marcador do mapa
+import * as Location from 'expo-location'; // pacote para a localização
+import * as ImagePicker from 'expo-image-picker'; //seletor de imagem
+import { ThemeContext } from '../Styles/temaContext.js'; // Importe o ThemeContext
+import * as Device from 'expo-device'; //pega informações do dispositivo
+import * as Notifications from 'expo-notifications'; //notificações pop up
+import Constants from 'expo-constants'; //constantes para o projeto
 import { scheduleNotificationAsync } from 'expo-notifications';
+import { Audio } from 'expo-av';
+
 
 export default function App() {
 
-  // Configuração do manipulador de notificações
+  //mensagem codigo da propria documentação
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -41,7 +42,9 @@ export default function App() {
     }),
   });
 
-  // Função para enviar uma notificação push
+
+  // Can use this function below or use Expo's Push Notification Tool from: https://expo.dev/notifications
+  // aqui são definidas as informações do pop up
   async function sendPushNotification(expoPushToken) {
     const message = {
       to: expoPushToken,
@@ -62,7 +65,6 @@ export default function App() {
     });
   }
 
-  // Função para registrar o dispositivo para notificações push
   async function registerForPushNotificationsAsync() {
     let token;
 
@@ -120,33 +122,59 @@ export default function App() {
   }, []);
 
 
-  // Constantes do projeto
+  //constantes do projeto
   const { theme, toggleTheme, configTextColor } = useContext(ThemeContext); // Acesse o tema atual
-  const navigation = useNavigation(); // Navegação
+  const navigation = useNavigation(); //navegação
   const styles = stylesY(theme);
 
-  const [location, setLocation] = useState(null); // Armazena a localização
-  const [markerLocation, setMarkerLocation] = useState(null); // Armazena o marcador
-  const [latitude, setLatitude] = useState(null); // Armazena a latitude
-  const [longitude, setLongitude] = useState(null); // Armazena a longitude
+  const [location, setLocation] = useState(null); //armazena a localização
+  const [markerLocation, setMarkerLocation] = useState(null); //armazena o marcador
+  const [latitude, setLatitude] = useState(null); //armazena o latitude
+  const [longitude, setLongitude] = useState(null);//armazena o longitude
 
-  const [tasks, setTasks] = useState([]); // Armazena as tarefas
-  const [selectedTasks, setSelectedTasks] = useState([]); // Armazena quais tarefas estão selecionadas
-  const [taskTitle, setTaskTitle] = useState(''); // Armazena o título das tarefas
-  const [taskDate, setTaskDate] = useState(new Date());
-  const [taskTime, setTaskTime] = useState(new Date()); // Armazena a hora das tarefas
-
-  const [taskLocation, setTaskLocation] = useState(''); // Armazena a localização das tarefas
-  const [taskCategory, setTaskCategory] = useState(''); // Armazena a categoria
-  const [modalVisible, setModalVisible] = useState(false); // Controla a visibilidade do modal
-  const [openModalImg, setopenModalImg] = useState(false); // Controla a visibilidade do segundo modal
+  const [tasks, setTasks] = useState([]); //armazena as tarefas
+  const [selectedTasks, setSelectedTasks] = useState([]); //armazena quais tarefas selecionadas
+  const [taskTitle, setTaskTitle] = useState(''); //armazena o titulo das tarefas
+  const [taskDate, setTaskDate] = useState(new Date()); //armazena a data das tarefas
+  const [taskTime, setTaskTime] = useState(new Date()); //armazena a hora das tarefas
+  const [taskLocation, setTaskLocation] = useState(''); //armazena a localização das tarefas
+  const [taskCategory, setTaskCategory] = useState(''); //armazena a categoria
+  const [modalVisible, setModalVisible] = useState(false); //modal visivel ou não
+  const [openModalImg, setopenModalImg] = useState(false); //modal 2
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [filter, setFilter] = useState('Pendentes'); // Alterado de 'Todos' para 'Pendentes'
   const [image, setImage] = useState(null);
 
-  // Cores das categorias que existem
+  const [sound, setSound] = useState();
+
+  async function playSound() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(require('../assets/msg.mpeg'));
+    setSound(sound);
+
+    sound.setOnPlaybackStatusUpdate(status => {
+      if (status.didJustFinish) {
+        console.log('Sound Finished, Stopping Sound');
+        sound.stopAsync();
+      }
+    });
+
+    console.log('Playing Sound');
+    await sound.playAsync();
+  }
+
+  // useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //         console.log('Unloading Sound');
+  //         sound.unloadAsync();
+  //       }
+  //     : undefined;
+  // }, [sound]);
+
+  //cores das categorias que existem
   const categoryColors = {
     'Atribuído a Mim': '#40f3ff',
     'Meu Dia': '#f8fa7a',
@@ -156,7 +184,6 @@ export default function App() {
     'Pendentes': '#DDDDDD', // Alterado de 'Todos' para 'Pendentes'
     'Concluído': '#ccc'
   };
-
 
   const handleAddTask = async () => {
     if (taskTitle.trim() === '') {
@@ -171,15 +198,46 @@ export default function App() {
       const timeDifference = taskDateTime.getTime() - now.getTime();
 
       // Agenda a notificação para a data e hora da tarefa
+      // Primeira notificação
       await scheduleNotificationAsync({
         content: {
           title: taskTitle,
           body: taskCategory,
           data: { someData: 'tarefa criada com sucesso' },
+          // sound: '../assets/msg.mpeg'
+        },
+        trigger: { seconds: (timeDifference / 1000) - 5000 } // Converte a diferença de tempo para segundos
+      });
+
+      await scheduleNotificationAsync({
+        content: {
+          title: taskTitle,
+          body: taskCategory,
+          data: { someData: 'tarefa criada com sucesso' },
+          // sound: '../assets/msg.mpeg'
         },
         trigger: { seconds: timeDifference / 1000 } // Converte a diferença de tempo para segundos
       });
+
+      // Segunda notificação
+      await scheduleNotificationAsync({
+        content: {
+          title: taskTitle,
+          body: 'Tarefa criada',
+          data: { someData: 'tarefa criada com sucesso' },
+          // sound: '../assets/msg.mpeg'
+
+        },
+        trigger: null
+
+      });
+        }
+
+    function handleNotification() {
+      playSound();
     }
+
+    Notifications.addNotificationReceivedListener(handleNotification);
 
     // Abaixo é setado a tarefa com os devidos dados
     const newTask = {
@@ -212,7 +270,6 @@ export default function App() {
     setImage(null);
   };
 
-
   const handleSelectTask = (id) => {
     if (selectedTasks.includes(id)) {
       setSelectedTasks(selectedTasks.filter((taskId) => taskId !== id));
@@ -231,7 +288,6 @@ export default function App() {
     setIsEditing(true);
     setModalVisible(true);
     setImage(task.image);
-
   };
 
   const handleDeleteTasks = () => {
@@ -243,18 +299,14 @@ export default function App() {
     const currentDate = selectedDate || taskDate;
     setDatePickerVisible(Platform.OS === 'ios');
     setTaskDate(currentDate);
-    console.log(selectedDate)
   };
-
 
   const onChangeTime = (event, selectedTime) => {
     const currentTime = selectedTime || taskTime;
     setTimePickerVisible(Platform.OS === 'ios');
     setTaskTime(currentTime);
-
   };
-
-  // Filtro das categorias
+  //filtro das categorias
   const handleFilter = (category) => {
     setFilter(category);
   };
@@ -340,34 +392,6 @@ export default function App() {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
-  };
-
-  const [gyroData, setGyroData] = useState({ x: 0, y: 0, z: 0 });
-
-  useEffect(() => {
-    _subscribe();
-    return () => {
-      _unsubscribe();
-    };
-  }, []);
-
-
-  const _subscribe = () => {
-    Gyroscope.setUpdateInterval(500);
-    this._subscription = Gyroscope.addListener(gyroscopeData => {
-      setGyroData(gyroscopeData);
-      if (Math.abs(gyroscopeData.x) > 6 || Math.abs(gyroscopeData.y) > 6 || Math.abs(gyroscopeData.z) > 6) {
-        console.log('Opening URL...'); // Log before opening URL
-        Linking.openURL('https://joaomanfre.github.io/teste/')
-          .then(() => console.log('URL opened')) // Log on success
-          .catch(err => console.error('Failed to open URL:', err)); // Log on failure
-      }
-    });
-  };
-
-  const _unsubscribe = () => {
-    this._subscription && this._subscription.remove();
-    this._subscription = null;
   };
 
   //parte visual do codigo
