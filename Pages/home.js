@@ -112,7 +112,7 @@ export default function App() {
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
+      // console.log(response);
     });
 
     return () => {
@@ -150,18 +150,18 @@ export default function App() {
   const [sound, setSound] = useState();
 
   async function playSound() {
-    console.log('Loading Sound');
+    // console.log('Loading Sound');
     const { sound } = await Audio.Sound.createAsync(require('../assets/msg.mpeg'));
     setSound(sound);
 
     sound.setOnPlaybackStatusUpdate(status => {
       if (status.didJustFinish) {
-        console.log('Sound Finished, Stopping Sound');
+        // console.log('Sound Finished, Stopping Sound');
         sound.stopAsync();
       }
     });
 
-    console.log('Playing Sound');
+    // console.log('Playing Sound');
     await sound.playAsync();
   }
 
@@ -332,7 +332,7 @@ export default function App() {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        console.log('Permissão de localização negada');
+        // console.log('Permissão de localização negada');
         return;
       }
 
@@ -370,10 +370,10 @@ export default function App() {
     setLatitude(coordinate.latitude);
     setLongitude(coordinate.longitude);
 
-    console.log('Novo valor de markerLocation:', {
-      latitudeValue: coordinate.latitude,
-      longitudeValue: coordinate.longitude,
-    });
+    // console.log('Novo valor de markerLocation:', {
+    //   latitudeValue: coordinate.latitude,
+    //   longitudeValue: coordinate.longitude,
+    // });
   };
 
 
@@ -387,7 +387,7 @@ export default function App() {
       quality: 1,
     });
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);

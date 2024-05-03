@@ -26,6 +26,9 @@ export default function Header() {
         <TouchableOpacity onPress={() => Linking.openURL('mailto:support@example.com?subject=Estou com Problemas&body=Descreva o problema encontrado')} style={styles.button}>
           <Text style={[styles.texto, { color: theme === 'light' ? 'white' : 'black', backgroundColor: theme === 'light' ? 'black' : 'white' , }]}>Suporte</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('blue')} style={styles.button}>
+          <Text style={[styles.texto, { color: theme === 'light' ? 'white' : 'black', backgroundColor: theme === 'light' ? 'blue' : 'blue'}]}>Bluetooth</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.button}>
           <Text style={[styles.texto, { color: theme === 'light' ? 'white' : 'black', backgroundColor: theme === 'light' ? 'black' : 'white'}]}>Voltar</Text>
         </TouchableOpacity>

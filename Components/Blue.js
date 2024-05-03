@@ -1,73 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { View, Button, Text, Alert, StyleSheet } from 'react-native';
-import Slider from '@react-native-community/slider';
+import { SafeAreaView, FlatList, Text, TouchableOpacity } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
 
-const BluetoothLinkSender = () => {
-  const [isBluetoothReady, setIsBluetoothReady] = useState(false);
-  const [range, setRange] = useState(100); // Alcance inicial de 100 metros
-  const manager = new BleManager();
+export default function App() {
+  const [devices, setDevices] = useState([]);
+  const [manager, setManager] = useState(null);
 
   useEffect(() => {
-    // Esta função será chamada quando o componente for montado
+    const manager = new BleManager();
+    setManager(manager);
+
     const subscription = manager.onStateChange((state) => {
       if (state === 'PoweredOn') {
-        setIsBluetoothReady(true);
+        scanDevices();
         subscription.remove();
       }
     }, true);
+  }, []);
 
-    return () => subscription.remove(); // Limpeza ao desmontar
-  }, [manager]);
-  // Função para enviar o link via Bluetooth
-  const sendBluetoothLink = async () => {
-    try {
-      // Verifique se o Bluetooth está pronto para uso
-      if (!isBluetoothReady) {
-        Alert.alert('Bluetooth não está pronto. Verifique as configurações.');
-        return;
+  const scanDevices = () => {
+    manager.startDeviceScan(null, null, (error, device) => {
+      if (error) {
+        console.log(error);
       }
 
-      // Implemente a lógica para enviar o link com o alcance especificado
-      const linkToSend = 'https://example.com/';
-      await NetworkBluetooth.sendLink(linkToSend, range); // Substitua pelo método correto da biblioteca
-
-      Alert.alert(`Link enviado com sucesso dentro do alcance de ${range} metros!`);
-    } catch (error) {
-      console.error('Erro ao enviar o link via Bluetooth:', error);
-      Alert.alert('Erro ao enviar o link. Verifique as configurações e tente novamente.');
-    }
+      if (device) {
+        setDevices((oldDevices) => [...oldDevices, device]);
+      }
+    });
   };
+  const renderItem = ({ item }) => (
+    <TouchableOpacity style={{ padding: 10 }}>
+      <Text>{item.name}</Text>
+      <Text>{item.id}</Text>
+    </TouchableOpacity>
+  );
 
   return (
-    <View style={styles.container}>
-      <Slider
-        style={styles.slider}
-        minimumValue={10}
-        maximumValue={200}
-        step={10}
-        value={range}
-        onValueChange={setRange}
+    <SafeAreaView>
+      <FlatList
+        data={devices}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
       />
-      <Button title="Enviar Link via Bluetooth" onPress={sendBluetoothLink} />
-      <Text>Alcance Atual: {range} metros</Text>
-    </View>
+    </SafeAreaView>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center', // Centraliza verticalmente
-    alignItems: 'center', // Centraliza horizontalmente
-    padding: 20, // Adiciona um pouco de espaço em volta dos elementos
-  },
-  slider: {
-    width: '100%', // O Slider ocupa toda a largura disponível
-    marginBottom: 60, // Adiciona um espaço abaixo do Slider
-  },
-});
-
-export default BluetoothLinkSender;
-
-
+}
