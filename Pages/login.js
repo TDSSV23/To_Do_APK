@@ -28,8 +28,8 @@ const Login = ({ navigation }) => {
 
     // Armazenar os dados em uma constante fixa (como solicitado)
     const fixedUserData = {
-      username: 'Admin',
-      password: '2203'
+      username: 'admin',
+      password: 'admin'
     };
 0
     // Verificar se os dados fornecidos correspondem aos dados fixos
